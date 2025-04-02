@@ -104,24 +104,52 @@ class Board:
         """
         if self.redo_history:
             start, end, piece, captured_piece = self.redo_history.pop()
+
             start_row, start_col = self.parse_position(start)
             end_row, end_col = self.parse_position(end)
             
-            self.board[end_row][end_col] = piece
+            self.board[end_row][end_col] = piece # Выполнение хода
             self.board[start_row][start_col] = '.'
             
             self.move_history.append((start, end, piece, captured_piece))
 
 class Piece:
     def __init__(self, color, position):
-        self.color = color
+        """
+        Инициализирует фигуру с указанным цветом и позицией.
+        
+        Параметры:
+            color (str): Цвет фигуры ('white' или 'black').
+            position (str): Позиция фигуры в шахматной нотации (например, "e4").
+        """
+        self.color = color 
         self.position = position
 
     def is_valid_move(self, board, end):
+        """
+        Абстрактный метод для проверки допустимости хода.
+        
+        Параметры:
+            board (Board): Объект доски.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         pass
 
 class Pawn(Piece):
     def is_valid_move(self, board, end):
+        """
+        Проверяет, является ли ход пешки допустимым.
+        
+        Параметры:
+            board (Board): Объект доски.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         start_row, start_col = board.parse_position(self.position)
         end_row, end_col = board.parse_position(end)
         direction = -1 if self.color == 'white' else 1
@@ -136,6 +164,15 @@ class Pawn(Piece):
         return False
     
     def get_possible_moves(self, board):
+        """
+        Возвращает список всех возможных ходов для пешки.
+        
+        Параметры:
+            board (Board): Объект доски.
+            
+        Возвращает:
+            list: Список строк с возможными ходами в шахматной нотации.
+        """
         moves = []
         start_row, start_col = board.parse_position(self.position)
         direction = -1 if self.color == 'white' else 1
@@ -167,6 +204,16 @@ class Pawn(Piece):
 
 class Rook(Piece):
     def is_valid_move(self, board, end):
+        """
+        Проверяет, является ли ход ладьи допустимым.
+        
+        Параметры:
+            board (Board): Объект доски.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         start_row, start_col = board.parse_position(self.position)
         end_row, end_col = board.parse_position(end)
         if start_row == end_row:
@@ -182,6 +229,15 @@ class Rook(Piece):
         return False
 
     def get_possible_moves(self, board):
+        """
+        Возвращает список всех возможных ходов для ладьи.
+        
+        Параметры:
+            board (Board): Объект доски.
+            
+        Возвращает:
+            list: Список строк с возможными ходами в шахматной нотации.
+        """
         moves = []
         start_row, start_col = board.parse_position(self.position)
 
@@ -203,6 +259,16 @@ class Rook(Piece):
     
 class Knight(Piece):
     def is_valid_move(self, board, end):
+        """
+        Проверяет, является ли ход коня допустимым.
+        
+        Параметры:
+            board (Board): Объект доски.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         start_row, start_col = board.parse_position(self.position)
         end_row, end_col = board.parse_position(end)
         if (abs(start_row - end_row) == 2 and abs(start_col - end_col) == 1) or (abs(start_row - end_row) == 1 and abs(start_col - end_col) == 2):
@@ -210,6 +276,15 @@ class Knight(Piece):
         return False
 
     def get_possible_moves(self, board):
+        """
+        Возвращает список всех возможных ходов для коня.
+        
+        Параметры:
+            board (Board): Объект доски.
+            
+        Возвращает:
+            list: Список строк с возможными ходами в шахматной нотации.
+        """
         moves = []
         start_row, start_col = board.parse_position(self.position)
 
@@ -225,6 +300,16 @@ class Knight(Piece):
     
 class Bishop(Piece):
     def is_valid_move(self, board, end):
+        """
+        Проверяет, является ли ход слона допустимым.
+        
+        Параметры:
+            board (Board): Объект доски.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         start_row, start_col = board.parse_position(self.position)
         end_row, end_col = board.parse_position(end)
         if abs(start_row - end_row) == abs(start_col - end_col):
@@ -240,6 +325,15 @@ class Bishop(Piece):
         return False
     
     def get_possible_moves(self, board):
+        """
+        Возвращает список всех возможных ходов для слона.
+        
+        Параметры:
+            board (Board): Объект доски.
+            
+        Возвращает:
+            list: Список строк с возможными ходами в шахматной нотации.
+        """
         moves = []
         start_row, start_col = board.parse_position(self.position)
 
@@ -261,15 +355,44 @@ class Bishop(Piece):
 
 class Queen(Piece):
     def is_valid_move(self, board, end):
+        """
+        Проверяет, является ли ход ферзя допустимым.
+        
+        Параметры:
+            board (Board): Объект доски.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         return Rook.is_valid_move(self, board, end) or Bishop.is_valid_move(self, board, end)
     
     def get_possible_moves(self, board):
+        """
+        Возвращает список всех возможных ходов для ферзя.
+        
+        Параметры:
+            board (Board): Объект доски.
+            
+        Возвращает:
+            list: Список строк с возможными ходами в шахматной нотации.
+        """
         # Ферзь объединяет возможности ладьи и слона
         return Rook.get_possible_moves(self, board) + Bishop.get_possible_moves(self, board)
 
 
 class King(Piece):
     def is_valid_move(self, board, end):
+        """
+        Проверяет, является ли ход короля допустимым.
+        
+        Параметры:
+            board (Board): Объект доски.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         start_row, start_col = board.parse_position(self.position)
         end_row, end_col = board.parse_position(end)
         if abs(start_row - end_row) <= 1 and abs(start_col - end_col) <= 1:
@@ -277,6 +400,15 @@ class King(Piece):
         return False
     
     def get_possible_moves(self, board):
+        """
+        Возвращает список всех возможных ходов для короля.
+        
+        Параметры:
+            board (Board): Объект доски.
+            
+        Возвращает:
+            list: Список строк с возможными ходами в шахматной нотации.
+        """
         moves = []
         start_row, start_col = board.parse_position(self.position)
 
@@ -295,11 +427,17 @@ class King(Piece):
 
 class Game:
     def __init__(self):
+        """
+        Инициализирует игру, создавая доску и устанавливая начальные значения.
+        """
         self.board = Board()
         self.turn = 'white'
         self.move_count = 0
 
     def play(self):
+        """
+        Основной игровой цикл, обрабатывающий ходы игроков и команды.
+        """
         while True:
             self.board.print_board()
             print(f"Ход {'белых' if self.turn == 'white' else 'черных'}. Введите ход (например, e2 e4) или команду (back, next, hint, threats, save, load, exit):")
@@ -330,25 +468,19 @@ class Game:
             else:
                 try:
                     start, end = command.split()
-                    start_row, start_col = self.board.parse_position(start)
-                    piece = self.board.board[start_row][start_col]
-                    
-                    if (self.turn == 'white' and piece.islower()) or (self.turn == 'black' and piece.isupper()):
-                        print("Неверный ход. Нельзя трогать фигуры противника.")
-                        continue
-                    
                     if self.is_valid_move(start, end):
-                        end_row, end_col = self.board.parse_position(end)
-                        if self.board.board[end_row][end_col] == 'k':
-                            print("Черный король повержен! Белые победили!")
-                            print("Количество ходов - ", self.move_count + 1)
-                            break
-                        elif self.board.board[end_row][end_col] == 'K':
-                            print("Белый король повержен! Черные победили!")
-                            print("Количество ходов - ", self.move_count + 1)
-                            break
                         self.board.make_move(start, end)
                         self.move_count += 1
+                        
+                        # Проверяем шах и мат после хода
+                        if self.is_check('black' if self.turn == 'white' else 'white'):
+                            if self.is_checkmate('black' if self.turn == 'white' else 'white'):
+                                print(f"Мат! {'Белые' if self.turn == 'black' else 'Черные'} победили!")
+                                print(f"Количество ходов: {self.move_count}")
+                                break
+                            else:
+                                print("Шах!")
+                        
                         self.turn = 'black' if self.turn == 'white' else 'white'
                     else:
                         print("Неверный ход. Повторите попытку.")
@@ -356,6 +488,16 @@ class Game:
                     print("Неверный формат команды. Повторите попытку.")
 
     def is_valid_move(self, start, end):
+        """
+        Проверяет, является ли ход допустимым.
+        
+        Параметры:
+            start (str): Начальная позиция хода.
+            end (str): Конечная позиция хода.
+            
+        Возвращает:
+            bool: True, если ход допустим, иначе False.
+        """
         start_row, start_col = self.board.parse_position(start)
         end_row, end_col = self.board.parse_position(end)
         piece = self.board.board[start_row][start_col]
@@ -363,20 +505,190 @@ class Game:
         if piece == '.':
             return False
         
+        # Проверяем, принадлежит ли фигура текущему игроку
+        if (self.turn == 'white' and piece.islower()) or (self.turn == 'black' and piece.isupper()):
+            return False
+
+        # Проверяем, является ли ход легальным для данной фигуры
+        is_legal = False
         if piece.lower() == 'p':
-            return Pawn('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
+            is_legal = Pawn('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
         elif piece.lower() == 'r':
-            return Rook('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
+            is_legal = Rook('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
         elif piece.lower() == 'n':
-            return Knight('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
+            is_legal = Knight('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
         elif piece.lower() == 'b':
-            return Bishop('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
+            is_legal = Bishop('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
         elif piece.lower() == 'q':
-            return Queen('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
+            is_legal = Queen('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
         elif piece.lower() == 'k':
-            return King('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
+            is_legal = King('white' if piece.isupper() else 'black', start).is_valid_move(self.board, end)
+
+        if not is_legal:
+            return False
+
+        # Проверяем, не оставляет ли ход короля под шахом
+        temp_board = [row[:] for row in self.board.board]
+        temp_board[end_row][end_col] = piece
+        temp_board[start_row][start_col] = '.'
         
+        # Находим позицию короля
+        king_pos = None
+        for i in range(8):
+            for j in range(8):
+                if (self.turn == 'white' and temp_board[i][j] == 'K') or \
+                   (self.turn == 'black' and temp_board[i][j] == 'k'):
+                    king_pos = (i, j)
+                    break
+            if king_pos:
+                break
+
+        # Проверяем, находится ли король под шахом после хода
+        for i in range(8):
+            for j in range(8):
+                if temp_board[i][j] != '.' and \
+                   temp_board[i][j].islower() != (self.turn == 'black'):
+                    # Проверяем, может ли фигура атаковать короля
+                    if self.is_piece_attacking_king(temp_board, (i, j), king_pos):
+                        return False
+
+        return True
+
+    def is_piece_attacking_king(self, board, piece_pos, king_pos):
+        """
+        Проверяет, может ли фигура атаковать короля.
+        
+        Параметры:
+            board (list): Двумерный список, представляющий доску.
+            piece_pos (tuple): Позиция фигуры (row, col).
+            king_pos (tuple): Позиция короля (row, col).
+            
+        Возвращает:
+            bool: True, если фигура может атаковать короля, иначе False.
+        """
+        piece = board[piece_pos[0]][piece_pos[1]]
+        piece_type = piece.lower()
+        
+        if piece_type == 'p':
+            # Для пешки проверяем только взятие по диагонали
+            direction = -1 if piece.isupper() else 1
+            for delta in [-1, 1]:
+                x = piece_pos[0] + direction
+                y = piece_pos[1] + delta
+                if (x, y) == king_pos:
+                    return True
+        elif piece_type == 'r':
+            # Для ладьи проверяем прямые линии
+            if piece_pos[0] == king_pos[0] or piece_pos[1] == king_pos[1]:
+                return self.is_path_clear(board, piece_pos, king_pos)
+        elif piece_type == 'n':
+            # Для коня проверяем L-образные ходы
+            dx = abs(piece_pos[0] - king_pos[0])
+            dy = abs(piece_pos[1] - king_pos[1])
+            return (dx == 2 and dy == 1) or (dx == 1 and dy == 2)
+        elif piece_type == 'b':
+            # Для слона проверяем диагонали
+            if abs(piece_pos[0] - king_pos[0]) == abs(piece_pos[1] - king_pos[1]):
+                return self.is_path_clear(board, piece_pos, king_pos)
+        elif piece_type == 'q':
+            # Для ферзя проверяем прямые линии и диагонали
+            if piece_pos[0] == king_pos[0] or piece_pos[1] == king_pos[1] or \
+               abs(piece_pos[0] - king_pos[0]) == abs(piece_pos[1] - king_pos[1]):
+                return self.is_path_clear(board, piece_pos, king_pos)
+        elif piece_type == 'k':
+            # Для короля проверяем соседние клетки
+            dx = abs(piece_pos[0] - king_pos[0])
+            dy = abs(piece_pos[1] - king_pos[1])
+            return dx <= 1 and dy <= 1
+
         return False
+
+    def is_path_clear(self, board, start, end):
+        """
+        Проверяет, свободен ли путь между двумя позициями.
+        
+        Параметры:
+            board (list): Двумерный список, представляющий доску.
+            start (tuple): Начальная позиция (row, col).
+            end (tuple): Конечная позиция (row, col).
+            
+        Возвращает:
+            bool: True, если путь свободен, иначе False.
+        """
+        if start[0] == end[0]:  # Горизонтальное движение
+            step = 1 if end[1] > start[1] else -1
+            for y in range(start[1] + step, end[1], step):
+                if board[start[0]][y] != '.':
+                    return False
+        elif start[1] == end[1]:  # Вертикальное движение
+            step = 1 if end[0] > start[0] else -1
+            for x in range(start[0] + step, end[0], step):
+                if board[x][start[1]] != '.':
+                    return False
+        else:  # Диагональное движение
+            step_x = 1 if end[0] > start[0] else -1
+            step_y = 1 if end[1] > start[1] else -1
+            x, y = start[0] + step_x, start[1] + step_y
+            while x != end[0] and y != end[1]:
+                if board[x][y] != '.':
+                    return False
+                x += step_x
+                y += step_y
+        return True
+
+    def is_check(self, color):
+        """Проверяет, находится ли король под шахом"""
+        # Находим позицию короля
+        king_pos = None
+        for i in range(8):
+            for j in range(8):
+                if (color == 'white' and self.board.board[i][j] == 'K') or \
+                   (color == 'black' and self.board.board[i][j] == 'k'):
+                    king_pos = (i, j)
+                    break
+            if king_pos:
+                break
+
+        if not king_pos:
+            return False
+
+        # Проверяем, может ли какая-либо фигура противника атаковать короля
+        for i in range(8):
+            for j in range(8):
+                if self.board.board[i][j] != '.' and \
+                   self.board.board[i][j].islower() != (color == 'black'):
+                    if self.is_piece_attacking_king(self.board.board, (i, j), king_pos):
+                        return True
+
+        return False
+
+    def is_checkmate(self, color):
+        """Проверяет, является ли шах матом"""
+        if not self.is_check(color):
+            return False
+
+        # Проверяем все возможные ходы всех фигур
+        for i in range(8):
+            for j in range(8):
+                if self.board.board[i][j] != '.' and \
+                   self.board.board[i][j].islower() == (color == 'black'):
+                    start = f"{chr(j + ord('a'))}{8 - i}"
+                    for x in range(8):
+                        for y in range(8):
+                            end = f"{chr(y + ord('a'))}{8 - x}"
+                            if self.is_valid_move(start, end):
+                                # Пробуем сделать ход
+                                temp_board = [row[:] for row in self.board.board]
+                                self.board.make_move(start, end)
+                                # Проверяем, все еще ли король под шахом
+                                still_in_check = self.is_check(color)
+                                # Возвращаем доску в исходное состояние
+                                self.board.board = temp_board
+                                # Если есть ход, который выводит из-под шаха, то это не мат
+                                if not still_in_check:
+                                    return False
+
+        return True
 
     def hint(self, pos):
         row, col = self.board.parse_position(pos)
@@ -520,39 +832,6 @@ class Game:
         else:
             print(f"Фигура на позиции {pos} не под угрозой.")
 
-            def is_check(self, color):
-                king_pos = None
-                threats = []
-                
-                # Найдём позицию короля
-                for i in range(8):
-                    for j in range(8):
-                        if (color == 'white' and self.board.board[i][j] == 'K') or (color == 'black' and self.board.board[i][j] == 'k'):
-                            king_pos = (i, j)
-                            break
-                    if king_pos:
-                        break
-                
-                if not king_pos:
-                    return False
-                
-                # Проверим, атакована ли позиция короля
-                for i in range(8):
-                    for j in range(8):
-                        piece = self.board.board[i][j]
-                        if piece != '.' and piece.islower() != (color == 'white'):
-                            moves = self.get_possible_moves(f"{chr(j + ord('a'))}{8 - i}")
-                            for move in moves:
-                                if self.board.parse_position(move) == king_pos:
-                                    threats.append((i, j))
-                
-                if threats:
-                    print(f"Король {'белых' if color == 'white' else 'черных'} находится под шахом!")
-                else:
-                    print("Шаха нет.")
-                
-                return bool(threats)
-
     def save_game(self, filename):
         try:
             with open(filename, 'w') as file:
@@ -560,8 +839,10 @@ class Game:
                 file.write(f"{self.move_count}\n")
                 for move in self.board.move_history:
                     start, end, piece, captured_piece = move
+
                     start_row, start_col = self.board.parse_position(start)
                     end_row, end_col = self.board.parse_position(end)
+                    
                     start_pos = f"{chr(start_col + ord('a'))}{8 - start_row}"
                     end_pos = f"{chr(end_col + ord('a'))}{8 - end_row}"
                     full_notation = f"{piece}{start_pos}{end_pos}"
